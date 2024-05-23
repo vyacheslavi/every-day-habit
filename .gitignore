@@ -1,0 +1,6 @@
+.env
+/certs
+backend/certs/jwt-private.pem
+backend/certs/jwt-public.pem
+__pycache__
+/venv

@@ -1,0 +1,18 @@
+
+.month-novigator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 20px;
+  margin: auto;
+}
+
+.day {
+  transition: background-color 0.2s;
+}
+
+.day :hover {
+  background-color: #262626;
+  border: 0.2rem solid #777;
+  cursor: pointer;
+}
