@@ -1,15 +1,20 @@
-from pydantic import BaseModel, EmailStr
+from typing import TYPE_CHECKING
+
+from pydantic import EmailStr
 from sqlalchemy import Boolean, LargeBinary
 from sqlalchemy.orm import mapped_column, Mapped, relationship
-from backend.app.database.base_model import Base
-from backend.app.database.models.habit import HabitModel
+
+from .base_model import Base
+
+if TYPE_CHECKING:
+    from backend.app.database.models.habit import HabitModel
 
 
 class UserModel(Base):
 
     __tablename__ = "user"
 
-    email: EmailStr = mapped_column(
+    email: Mapped[str] = mapped_column(
         unique=True,
         index=True,
         nullable=False,

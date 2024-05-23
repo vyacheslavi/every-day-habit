@@ -27,4 +27,4 @@ class DataBaseHelper:
             yield session
 
 
-db_helper = DataBaseHelper(url=settings.db.url, echo=settings.db.echo)
+db_helper = DataBaseHelper(url=settings.pg_dsn, echo=settings.db_echo)

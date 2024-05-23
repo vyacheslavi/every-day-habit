@@ -1,8 +1,11 @@
-from pydantic import BaseModel
+import sys
+from typing import TYPE_CHECKING
 from sqlalchemy.orm import relationship, Mapped
 
-from backend.app.database.base_model import Base
-from backend.app.database.models.user import UserModel
+from .base_model import Base
+
+if TYPE_CHECKING:
+    from backend.app.database.models.user import UserModel
 
 
 class HabitModel(Base):
