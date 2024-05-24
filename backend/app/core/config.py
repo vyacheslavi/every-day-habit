@@ -7,6 +7,11 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 BASE_DIR = Path(__file__).parent.parent
 
 
+class RunSettings(BaseModel):
+    port: int = 8000
+    host: str = "127.0.0.1"
+
+
 class DBSettings(BaseModel):
     pg_dsn: PostgresDsn
     db_echo: bool = False
@@ -30,8 +35,7 @@ class Settings(BaseSettings):
 
     db: DBSettings
     security: SecuritySettings = SecuritySettings()
+    run: RunSettings = RunSettings()
 
 
 settings = Settings()
-
-print(settings.db.pg_dsn)
