@@ -13,7 +13,7 @@ class RunSettings(BaseModel):
 
 
 class DBSettings(BaseModel):
-    pg_dsn: PostgresDsn
+    pg_dsn: str
     db_echo: bool = False
 
 
