@@ -12,6 +12,11 @@ class RunSettings(BaseModel):
     host: str = "127.0.0.1"
 
 
+class EmailSettings(BaseModel):
+    login: str
+    password: str
+
+
 class DBSettings(BaseModel):
     pg_dsn: str
     db_echo: bool = False
@@ -34,6 +39,7 @@ class Settings(BaseSettings):
     )
 
     db: DBSettings
+    email: EmailSettings
     security: SecuritySettings = SecuritySettings()
     run: RunSettings = RunSettings()
 
