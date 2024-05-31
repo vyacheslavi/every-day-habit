@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .base import CRUDBase
@@ -26,7 +26,7 @@ class CompleteDaysCRUD(CRUDBase[CompleteDayModel, CompleteDay, CompleteDay]):
     async def delete(
         self, habit_id: int, date: datetime, session: AsyncSession
     ) -> None:
-        stmt = select(CompleteDayModel).where(
+        stmt = delete(CompleteDayModel).where(
             (CompleteDayModel.date == date) & (CompleteDayModel.habit_id == habit_id)
         )
 
