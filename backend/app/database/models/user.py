@@ -34,6 +34,11 @@ class UserModel(Base):
         default=False,
         nullable=False,
     )
+    is_verified: Mapped[bool] = mapped_column(
+        Boolean,
+        default=False,
+        nullable=False,
+    )
 
     habits: Mapped[list["HabitModel"]] = relationship(
         back_populates="user",
