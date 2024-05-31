@@ -14,7 +14,7 @@ class UserUpdate(UserBase):
     pass
 
 
-class UserResponseModel(UserBase):
+class UserResponseModel(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
