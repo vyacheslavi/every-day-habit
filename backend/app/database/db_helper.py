@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import (
     AsyncSession,
 )
 
-from core.config import settings
+from backend.app.core.config import settings
 
 
 class DataBaseHelper:
@@ -27,4 +27,4 @@ class DataBaseHelper:
             yield session
 
 
-db_helper = DataBaseHelper(url=settings.pg_dsn, echo=settings.db_echo)
+db_helper = DataBaseHelper(url=settings.db.pg_dsn, echo=settings.db.db_echo)
