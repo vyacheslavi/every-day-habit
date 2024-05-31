@@ -8,8 +8,10 @@ BASE_DIR = Path(__file__).parent.parent
 
 
 class RunSettings(BaseModel):
+    scheme: str = "http"
     port: int = 8000
     host: str = "127.0.0.1"
+    url: str = f"{scheme}://{host}:{port}"
 
 
 class EmailSettings(BaseModel):
@@ -23,8 +25,8 @@ class DBSettings(BaseModel):
 
 
 class SecuritySettings(BaseModel):
-    jwt_private_key: Path = BASE_DIR / "backend" / "certs" / "jwt-private.pem"
-    jwt_public_key: Path = BASE_DIR / "backend" / "certs" / "jwt-public.pem"
+    jwt_private_key: Path = BASE_DIR / "certs" / "jwt-private.pem"
+    jwt_public_key: Path = BASE_DIR / "certs" / "jwt-public.pem"
     algorithm: str = "RS256"
     access_token_expire_minutes: int = 15
 
