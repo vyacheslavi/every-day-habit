@@ -1,6 +1,10 @@
 from typing import Annotated
 from fastapi import Depends, Form
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import (
+    OAuth2PasswordBearer,
+    OAuth2PasswordRequestForm,
+    OAuth2AuthorizationCodeBearer,
+)
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -11,7 +15,7 @@ from . import security_utils
 from . import exceptions
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/v1/token")
+oauth2_scheme = security_utils.OAuth2PasswordBearerWithCookie(tokenUrl="/v1/token")
 
 
 async def verify_user(

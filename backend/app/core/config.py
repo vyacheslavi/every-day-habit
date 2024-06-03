@@ -28,7 +28,7 @@ class SecuritySettings(BaseModel):
     jwt_private_key: Path = BASE_DIR / "certs" / "jwt-private.pem"
     jwt_public_key: Path = BASE_DIR / "certs" / "jwt-public.pem"
     algorithm: str = "RS256"
-    access_token_expire_minutes: int = 15
+    access_token_expire_minutes: int = 60 * 24
 
 
 class Settings(BaseSettings):

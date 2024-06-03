@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Form, Request, status
+from fastapi import APIRouter, Depends, Form, Request, Response, status
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, EmailStr
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -62,9 +62,18 @@ async def user_verification(
     response_model=Token,
 )
 async def auth_user_issue_jwt(
+    response: Response,
     user: UserModel = Depends(deps.authenticate_user),
 ) -> Token:
-    token = await tokens_helper.create_access_token(user)
+    token_dict = await tokens_helper.create_access_token(user)
+    token = token_dict.get("token")
+    response.set_cookie(
+        key="access_token",
+        value=f"Bearer {token}",
+        expires=token_dict.get("expire"),
+        httponly=True,
+        samesite="strict",
+    )
     return Token(
         access_token=token,
     )
