@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from pydantic import BaseModel
-from sqlalchemy import ForeignKey, extract
+from sqlalchemy import ForeignKey, UniqueConstraint, extract
 from sqlalchemy.orm import relationship, mapped_column, Mapped
 from sqlalchemy.types import Date
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -15,6 +15,14 @@ if TYPE_CHECKING:
 class CompleteDayModel(Base):
 
     __tablename__ = "complete_day"
+
+    __table_args__ = (
+        UniqueConstraint(
+            "habit_id",
+            "date",
+            name="idx_unique_habit_date",
+        ),
+    )
 
     habit_id: Mapped[int] = mapped_column(ForeignKey("habit.id"))
     date: Mapped[str] = mapped_column(Date)
