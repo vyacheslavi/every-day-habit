@@ -12,7 +12,7 @@ router = APIRouter(
 )
 
 
-@router.get("/get-days")
+@router.get("/month/{month}/year/{year}/habit-id/{habit_id}")
 async def get_days_from_the_month(
     month: int,
     year: int,
@@ -23,7 +23,7 @@ async def get_days_from_the_month(
     return await crud.complete_day.get_for_month(month, year, habit_id, session)
 
 
-@router.post("/complete-day")
+@router.post("/")
 async def complete_day(
     complete_day: CompleteDay,
     session: AsyncSession = Depends(db_helper.session_dependency),
@@ -31,7 +31,7 @@ async def complete_day(
     await crud.complete_day.create(complete_day, session)
 
 
-@router.delete("/delete-day")
+@router.delete("/")
 async def delete_day(
     habit_id: CompleteDay,
     date: datetime,
