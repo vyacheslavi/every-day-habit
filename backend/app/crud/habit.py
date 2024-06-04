@@ -1,3 +1,6 @@
+import datetime
+import calendar
+
 from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -13,6 +16,22 @@ class HabitCRUD(CRUDBase[HabitModel, schemas.HabitCreate, schemas.HabitUpdate]):
         session: AsyncSession,
     ) -> list[HabitModel] | None:
         stmt = select(HabitModel).where(HabitModel.user_id == user.id)
+        result: Result = await session.execute(stmt)
+        habits = result.scalars().all()
+        return list(habits)
+
+    async def get_habits_for_month(
+        self,
+        user: UserModel,
+        month: int,
+        year: int,
+        session: AsyncSession,
+    ) -> list[HabitModel] | None:
+
+        _, last_day = calendar.monthrange(year, month)
+        date = datetime.date(year, month, last_day)
+
+        stmt = select(HabitModel).where(HabitModel.created_at <= date)
         result: Result = await session.execute(stmt)
         habits = result.scalars().all()
         return list(habits)

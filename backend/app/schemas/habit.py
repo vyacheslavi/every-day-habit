@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 from pydantic import BaseModel, ConfigDict
 
 
@@ -13,15 +13,14 @@ class HabitUpdate(HabitBase):
 
 
 class HabitCreate(HabitBase):
-    pass
+    created_at: date
 
 
 class HabitResponseModel(HabitBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    created_at: datetime
 
 
-class HabitInDb(HabitBase):
+class HabitInDb(HabitCreate):
     user_id: int

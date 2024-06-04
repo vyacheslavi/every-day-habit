@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import select, delete
+from sqlalchemy import Result, select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .base import CRUDBase
@@ -10,6 +10,7 @@ from backend.app.schemas import CompleteDay
 class CompleteDaysCRUD(CRUDBase[CompleteDayModel, CompleteDay, CompleteDay]):
 
     async def get_for_month(
+        self,
         month: int,
         year: int,
         habit_id: int,
@@ -20,8 +21,9 @@ class CompleteDaysCRUD(CRUDBase[CompleteDayModel, CompleteDay, CompleteDay]):
             & (CompleteDayModel.date_year == year)
             & (CompleteDayModel.habit_id == habit_id)
         )
-
-        return await list(session.scalars(stmt))
+        result: Result = await session.execute(stmt)
+        cd_list = result.scalars().all()
+        return list(cd_list)
 
     async def delete(
         self, habit_id: int, date: datetime, session: AsyncSession
