@@ -20,7 +20,7 @@ class HabitCRUD(CRUDBase[HabitModel, schemas.HabitCreate, schemas.HabitUpdate]):
         habits = result.scalars().all()
         return list(habits)
 
-    async def get_habits_for_month(
+    async def get_for_month(
         self,
         user: UserModel,
         month: int,
@@ -31,7 +31,9 @@ class HabitCRUD(CRUDBase[HabitModel, schemas.HabitCreate, schemas.HabitUpdate]):
         _, last_day = calendar.monthrange(year, month)
         date = datetime.date(year, month, last_day)
 
-        stmt = select(HabitModel).where(HabitModel.created_at <= date)
+        stmt = select(HabitModel).where(
+            (HabitModel.user_id == user.id) & (HabitModel.created_at <= date)
+        )
         result: Result = await session.execute(stmt)
         habits = result.scalars().all()
         return list(habits)

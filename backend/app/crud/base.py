@@ -1,4 +1,4 @@
-from typing import Any, Generic, List, Optional, TypeVar, Union, Tuple, Dict, NewType
+from typing import Generic, TypeVar, NewType
 
 from pydantic import BaseModel
 from sqlalchemy import update
@@ -52,27 +52,23 @@ class CRUDBase(Generic[DBModelType, CreateSchemaType, UpdateSchemaType]):
         id: ObjectId,
         document_in: UpdateSchemaType,
         session: AsyncSession,
-    ) -> None:
+    ) -> bool:
 
         document_from_db = await self.get_by_id(id, session)
-        documents_dict = document_in.model_dump(exclude_unset=True).items
-        print(documents_dict)
-        for key, value in documents_dict:
+        document_dict = document_in.model_dump(exclude_unset=True).items()
+        for key, value in document_dict:
             setattr(document_from_db, key, value)
 
         update(self.db_model).values()
-
         await session.commit()
+
+        return True
 
     async def delete(
         self,
         id,
         session: AsyncSession,
     ) -> bool:
-        try:
-            document_from_db = await self.get_by_id(id, session)
-            await session.delete(document_from_db)
-            await session.commit()
-            return True
-        except:
-            return False
+        document_from_db = await self.get_by_id(id, session)
+        await session.delete(document_from_db)
+        await session.commit()

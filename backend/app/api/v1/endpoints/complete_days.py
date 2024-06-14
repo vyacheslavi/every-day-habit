@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -33,8 +33,8 @@ async def complete_day(
 
 @router.delete("/")
 async def delete_day(
-    habit_id: CompleteDay,
-    date: datetime,
+    habit_id: int,
+    date: date,
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
     await crud.complete_day.delete(habit_id, date, session)

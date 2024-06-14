@@ -3,7 +3,7 @@ from fastapi import HTTPException, status
 
 unauth_exc = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
-    detail="Invalid username of password",
+    detail="Invalid username or password",
 )
 inactive_exc = HTTPException(
     status_code=status.HTTP_403_FORBIDDEN,
@@ -15,9 +15,14 @@ not_super_user_exc = HTTPException(
 )
 token_invalid_exc = HTTPException(
     status_code=status.HTTP_403_FORBIDDEN,
-    detail="token invalid (user not found)",
+    detail="Token invalid (user not found)",
 )
 user_already_exist = HTTPException(
     status_code=status.HTTP_403_FORBIDDEN,
     detail="User with this name already exists",
+)
+
+too_large_goal = HTTPException(
+    status_code=status.HTTP_400_BAD_REQUEST,
+    detail="Goal must be less or equal 30 days",
 )
