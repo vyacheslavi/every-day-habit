@@ -42,4 +42,5 @@ class UserModel(Base):
 
     habits: Mapped[list["HabitModel"]] = relationship(
         back_populates="user",
+        cascade="all, delete",
     )
