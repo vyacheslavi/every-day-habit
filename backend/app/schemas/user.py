@@ -1,3 +1,4 @@
+from fastapi import Form
 from pydantic import BaseModel, ConfigDict, EmailStr
 
 
@@ -8,6 +9,14 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     pass
+
+    @classmethod
+    def as_form(
+        cls,
+        email: EmailStr = Form(...),
+        password: str = Form(...),
+    ):
+        return cls(email=email, password=password)
 
 
 class UserUpdate(UserBase):
