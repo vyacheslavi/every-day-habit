@@ -10,7 +10,8 @@ from sqlalchemy.orm import relationship, Mapped, mapped_column
 from .base_model import Base
 
 if TYPE_CHECKING:
-    from backend.app.database.models.user import UserModel
+    from backend.app.database.models import UserModel
+    from backend.app.database.models import CompleteDayModel
 
 
 class HabitModel(Base):
@@ -19,9 +20,14 @@ class HabitModel(Base):
 
     name: Mapped[str]
     goal: Mapped[int]
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"))
     created_at: Mapped[str] = mapped_column(Date)
+
     user: Mapped["UserModel"] = relationship(back_populates="habits")
+    cd: Mapped["CompleteDayModel"] = relationship(
+        # back_populates="habit",
+        cascade="all, delete",
+    )
 
     @hybrid_property
     def created_at_year(self):
