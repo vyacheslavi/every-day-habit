@@ -1,0 +1,31 @@
+
+<div class="modal fade" id="edit-habit-modal" tabindex="-1" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5">Edit habit</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="edit-habit-form">
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Date</label>
+              <input type="text" class="form-control" id="habit-name" name="name">
+              <div class="invalid-feedback"></div>
+            </div>
+            <div class="mb-3">
+              <label for="message-text" class="col-form-label">Text:</label>
+              <input type="nimber" class="form-control" id="habit-goal" name="goal">
+            </div>
+            <button class="w-100 btn btn-lg btn-warning" type="submit" id="edit-habit-btn">
+              <span class="spinner-border spinner-border-sm visually-hidden" id="spnr" aria-hidden="true"></span>
+              <span role="status">
+                Save habit
+              </span>
+            </button>
+            <div class="invalid-feedback-my text-center" id="invalid-fbck-create-habit"></div>
+          </form>
+        </div>
+
+      </div>
+    </div>

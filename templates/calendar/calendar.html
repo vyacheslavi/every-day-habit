@@ -1,0 +1,55 @@
+{% extends "base.html"%}
+
+{% block title %}
+
+{% endblock title%}
+
+{% block content %}
+<html>
+  <body class="bg-dark">
+    <div class="container-my mt-5 mb-2">
+      <div class="container-my-nav d-flex align-items-center justify-content-between">
+        <img src="{{ url_for('static', path='/img/caret-left-fill.svg')}}" id="left-arrow">
+        <h2 class="text-center text-light ms-3 me-3" id="date-string"></h2>
+        <img src="{{ url_for('static', path='/img/caret-right-fill.svg')}}" id="right-arrow">
+      </div>
+      <div class="table-responsive-xl"></div>
+      <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#create-habit-modal">
+        + new habit
+      </button>
+    </div>
+    <div class="container-sm container-my-notes mt-3">
+      <div class="d-flex justify-content-between mb-2">
+        <h4>Notes</h4>
+        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#create-note-modal">+ note</button>
+      </div>
+      <div id="note-div">
+      </div>
+
+      <p class="text-center d-none" id="notes-hint">
+        Click "+ note" to add notes for current month
+      </p>
+    </div>
+    <div>
+      {% include '/calendar/components/habits/createhabitmodal.html' %}
+    </div>
+    <div>
+      {% include '/calendar/components/habits/edithabitmodal.html' %}
+    </div>
+    <div>
+      {% include '/calendar/components/habits/deletehabitmodal.html' %}
+    </div>
+    <div>
+      {% include "/calendar/components/notes/deletenote.html" %}
+    </div>
+    <div>
+      {% include "/calendar/components/notes/editnote.html" %}
+    </div>
+    <div>
+      {% include "/calendar/components/notes/createnote.html" %}
+    </div>
+
+  </body>
+<script src="{{ url_for('static', path='/scripts/calendar/calendar.js')}}" defer></script>
+</html>
+{% endblock content %}

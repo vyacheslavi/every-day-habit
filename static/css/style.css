@@ -1,0 +1,123 @@
+
+.container-my {
+  max-width: 1490px;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.container-my-header {
+  max-width: 1490px;
+}
+
+.container-my-nav {
+  max-width: 350px;
+  margin: auto;
+}
+
+.container-my-notes {
+  max-width: 900px;
+  margin: auto;
+}
+
+.month-novigator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 20px;
+  margin: auto;
+}
+
+.day {
+  transition: background-color 0.2s;
+}
+
+.day :hover {
+  background-color: #bfbfbf;
+  border: 0.2rem solid #777;
+  cursor: pointer;
+}
+
+
+/* ---------------------Active-column-------------------------------------------- */
+
+th.active-tab {
+  background: #c2c2c2!important;
+  color: #202020!important
+}
+
+tbody .active-tab,th.active-tab {
+  border-left: 1px solid #237232!important;
+  border-right: 1px solid #237232!important
+}
+
+tbody tr:last-child .active-tab {
+  border-bottom: 1px solid #237232!important
+}
+/* ------------------------------------------------------------------------------ */
+.table-row-fix {
+  table-layout:fixed;
+  /* overflow-x: scroll; */
+}
+
+table {
+  min-width: 1490px;
+}
+
+td {
+  word-wrap:break-word;
+  white-space: normal
+}
+
+td.cell {
+  cursor: pointer;
+}
+
+.habit-column {
+  width: 10%;
+  /* width: 350px; */
+}
+
+.goal-column {
+  width: 3%;
+  /* width: 100px; */
+}
+
+.achieved-column {
+  width: 6%;
+  /* width: 150px; */
+}
+
+.invalid-feedback-my  {
+  color: rgb(255, 43, 43);
+  margin-top: 15px;
+  margin:auto;
+}
+
+.valid-feedback-my {
+  color: rgb(45, 234, 45);
+  margin-top: 15px;
+  margin:auto;
+}
+
+
+/* ---------------------------------------------------habit-name-cell------------------------------------------------- */
+
+.habit-tools {
+  align-items: center;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.btn-my {
+  height: 24px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+
+habit-name-span {
+  display: block
+}

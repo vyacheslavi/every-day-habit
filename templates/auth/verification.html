@@ -1,0 +1,19 @@
+{% extends "base.html"%}
+
+{% block content %}
+<html>
+  <body class="bg-dark">
+    <div class="container w-50 position-absolute top-50 start-50 translate-middle">
+        <!-- <div class="card text-bg-success mb-3 text-center"> -->
+        <div class="card mb-3 text-bg-secondary text-center">
+            <div class="card-body">
+              <h3 class="card-title">Primary card title</h3>
+              <p class="card-text">Click on the button to verificate account</p>
+            </div>
+            <button class="btn btn-success" type="button">Button</button>
+          </div>
+       <script src="{{ url_for('static', path='/scripts/auth/register.js')}}"></script>
+    </div>
+  </body>
+</html>
+{% endblock %}

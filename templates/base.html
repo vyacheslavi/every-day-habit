@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ title }}</title>
+	<link rel="icon" type="image/png" href="{{ url_for('static', path='/img/favicon.ico')}}">
+	<link rel="stylesheet" href="{{ url_for('static', path='/css/normalize.css')}}">
+	<link rel="stylesheet" href="{{ url_for('static', path='/css/bootstrap.css')}}">
+	<link rel="stylesheet" href="{{ url_for('static', path='/css/style.css')}}">
+	<script src="{{ url_for('static', path='/scripts/bootstrap.js')}}"></script>
+</head>
+  <div>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-lg container-my-header">
+        <a class="navbar-brand" href="#">EveryDayHabits</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#how-it-works-modal">
+                How it works
+              </button>
+            </li>
+          </ul>
+          <div class="nav-item dropdown" style="padding-left: auto;">
+            {% if user %}
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              {{ user.email }}
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/logout">Logout</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">Donate</a></li>
+            </ul>
+							{% else %}
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Profile
+              </a>
+							{% endif %}
+          </div>
+        </div>
+      </div>
+    </nav>
+
+  </div>
+    <div>
+      {% include "/calendar/components/other/howitworksmodal.html" %}
+    </div>
+        {% block content %}
+        {% endblock content %}
+
+</html>
