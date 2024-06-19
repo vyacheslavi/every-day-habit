@@ -37,9 +37,8 @@ async def registration(
         verification_token = await tokens_helper.create_verification_token(user=user)
         await email_sender.send_request_on_verify(
             user.email,
-            verification_token,
+            verification_token["token"],
         )
-        return "Check email for verification message"
     else:
         raise exceptions.user_already_exist
 
@@ -53,9 +52,8 @@ async def user_verification(
         email = payload["email"]
         user = await crud.user.get_by_email(email=email, session=session)
         await crud.user.verify_user(session=session, user=user)
-        return "Successfull verification"
     except:
-        raise "Token invalid or expired"
+        raise exceptions.token_invalid_exc
 
 
 @router.post(
