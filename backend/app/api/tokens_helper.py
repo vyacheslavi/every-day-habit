@@ -1,15 +1,15 @@
+from datetime import timedelta
 from typing import Dict, NewType, Optional
 
 from backend.app.api import security_utils
 from backend.app.database.models import UserModel
 from backend.app import schemas
-
-Minutes = NewType("Minutes", int)
+from backend.app.core.config import settings
 
 
 def create_token(
     payload: dict,
-    expire_timedelta: Minutes = None,
+    expire_timedelta: timedelta = None,
 ) -> dict:
     return security_utils.encode_jwt(
         payload=payload,
@@ -30,9 +30,19 @@ async def create_reset_password_token(user: UserModel) -> dict:
         "email": user.email,
     }
 
-    return create_token(payload)
+    return create_token(
+        payload,
+        expire_timedelta=timedelta(
+            minutes=settings.security.reset_token_expire_minutes
+        ),
+    )
 
 
 async def create_verification_token(user: schemas.UserCreate) -> dict:
     payload = {"verification": "OK", "email": user.email}
-    return create_token(payload)
+    return create_token(
+        payload,
+        expire_timedelta=timedelta(
+            minutes=settings.security.verification_token_expire_minutes
+        ),
+    )
