@@ -1,3 +1,4 @@
+from sqlalchemy import NullPool
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
     async_sessionmaker,
@@ -9,10 +10,11 @@ from backend.app.core.config import settings
 
 class DataBaseHelper:
 
-    def __init__(self, url, echo) -> None:
+    def __init__(self, url, echo, params) -> None:
         self.engine = create_async_engine(
             url=url,
             echo=echo,
+            **params,
         )
 
         self.session_factory = async_sessionmaker(
@@ -27,4 +29,18 @@ class DataBaseHelper:
             yield session
 
 
-db_helper = DataBaseHelper(url=settings.db.pg_dsn, echo=settings.db.db_echo)
+if settings.mode == "TEST":
+    url = settings.test_db.pg_dsn
+    echo = settings.test_db.echo
+    params = {"poolclass": NullPool}
+else:
+    url = settings.db.pg_dsn
+    echo = settings.db.echo
+    params = {}
+
+
+db_helper = DataBaseHelper(
+    url=url,
+    echo=echo,
+    params=params,
+)
