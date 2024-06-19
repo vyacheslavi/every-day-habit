@@ -13,9 +13,13 @@ not_super_user_exc = HTTPException(
     status_code=status.HTTP_403_FORBIDDEN,
     detail="User is not superuser",
 )
-token_invalid_exc = HTTPException(
+token_or_user_invalid_exc = HTTPException(
     status_code=status.HTTP_403_FORBIDDEN,
     detail="Token invalid (user not found)",
+)
+token_invalid_exc = HTTPException(
+    status_code=status.HTTP_403_FORBIDDEN,
+    detail="Token invalid or expired",
 )
 user_already_exist = HTTPException(
     status_code=status.HTTP_403_FORBIDDEN,
