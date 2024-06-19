@@ -1,3 +1,4 @@
+from typing import Literal
 from dotenv import find_dotenv
 from pathlib import Path
 from pydantic import BaseModel, PostgresDsn
@@ -21,7 +22,12 @@ class EmailSettings(BaseModel):
 
 class DBSettings(BaseModel):
     pg_dsn: str
-    db_echo: bool = False
+    echo: bool
+
+
+class TestDBSettings(BaseModel):
+    pg_dsn: str
+    echo: bool
 
 
 class SecuritySettings(BaseModel):
@@ -29,6 +35,8 @@ class SecuritySettings(BaseModel):
     jwt_public_key: Path = BASE_DIR / "certs" / "jwt-public.pem"
     algorithm: str = "RS256"
     access_token_expire_minutes: int = 60 * 24
+    verification_token_expire_minutes: int = 10
+    reset_token_expire_minutes: int = 10
 
 
 class Settings(BaseSettings):
@@ -39,8 +47,9 @@ class Settings(BaseSettings):
         env_prefix="APP_CONFIG__",
         env_nested_delimiter="__",
     )
-
+    mode: Literal["TEST", "DEV", "PROD"]
     db: DBSettings
+    test_db: TestDBSettings
     email: EmailSettings
     security: SecuritySettings = SecuritySettings()
     run: RunSettings = RunSettings()
