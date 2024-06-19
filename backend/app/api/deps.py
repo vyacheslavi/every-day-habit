@@ -1,10 +1,6 @@
 from typing import Annotated
 from fastapi import Depends, Form
-from fastapi.security import (
-    OAuth2PasswordBearer,
-    OAuth2PasswordRequestForm,
-    OAuth2AuthorizationCodeBearer,
-)
+from fastapi.security import OAuth2PasswordRequestForm
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -57,7 +53,7 @@ async def get_current_payload(token: str = Depends(oauth2_scheme)):
         )
         return payload
     except Exception as e:
-        raise exceptions.token_invalid_exc
+        raise exceptions.token_or_user_invalid_exc
 
 
 async def get_current_auth_user(
@@ -70,7 +66,7 @@ async def get_current_auth_user(
         email=email,
     )
     if not user:
-        raise exceptions.token_invalid_exc
+        raise exceptions.token_or_user_invalid_exc
     return user
 
 

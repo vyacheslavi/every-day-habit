@@ -31,7 +31,7 @@ class EmailSender:
             smtp.send_message(msg)
 
     async def send_request_on_verify(self, receiver_email: str, token: str):
-        url = f"{settings.run.url}/v1/auth/verification?token={token}"
+        url = f"{settings.run.url}/verificator?token={token}"
         message = f"Verification requested for user {receiver_email}. Follow the link below: {url}"
         await self.send_email(receiver_email, "Verification", message)
 
