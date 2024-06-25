@@ -25,7 +25,7 @@ class CompleteDayModel(Base):
 
     habit_id: Mapped[int] = mapped_column(ForeignKey("habit.id", ondelete="CASCADE"))
     date: Mapped[str] = mapped_column(Date)
-    habit: Mapped["HabitModel"] = relationship()
+    # habit: Mapped["HabitModel"] = relationship()
 
     @hybrid_property
     def date_year(self):
