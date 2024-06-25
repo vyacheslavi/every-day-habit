@@ -1,17 +1,17 @@
 from typing import Annotated
-from fastapi import Depends, Form
+from fastapi import Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from .auth_schema.auth2_schema import OAuth2PasswordBearerWithCookie
 from backend.app.database.db_helper import db_helper
-from backend.app import crud, schemas
+from backend.app import crud
 from backend.app.database.models.user import UserModel
 from . import security_utils
 from . import exceptions
 
-
-oauth2_scheme = security_utils.OAuth2PasswordBearerWithCookie(tokenUrl="/v1/token")
+oauth2_scheme = OAuth2PasswordBearerWithCookie(tokenUrl="/v1/token")
 
 
 async def verify_user(
@@ -47,13 +47,10 @@ async def authenticate_user(
 
 
 async def get_current_payload(token: str = Depends(oauth2_scheme)):
-    try:
-        payload = security_utils.decode_jwt(
-            token=token,
-        )
-        return payload
-    except Exception as e:
-        raise exceptions.token_or_user_invalid_exc
+    payload = security_utils.decode_jwt(
+        token=token,
+    )
+    return payload
 
 
 async def get_current_auth_user(

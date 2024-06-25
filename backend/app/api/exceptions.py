@@ -25,7 +25,6 @@ user_already_exist = HTTPException(
     status_code=status.HTTP_403_FORBIDDEN,
     detail="User with this name already exists",
 )
-
 too_large_goal = HTTPException(
     status_code=status.HTTP_400_BAD_REQUEST,
     detail="Goal must be less or equal 30 days",

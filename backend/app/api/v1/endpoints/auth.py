@@ -1,8 +1,6 @@
-from fastapi import APIRouter, Body, Depends, Form, Request, Response, status
-from fastapi.responses import RedirectResponse
+from fastapi import APIRouter, Depends, Form, Response
 from pydantic import BaseModel, EmailStr
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.exc import IntegrityError
 
 from backend.app.database.db_helper import db_helper
 from backend.app.database.models.user import UserModel
@@ -33,14 +31,20 @@ async def registration(
 ):
     user = await crud.user.create(user_in, session)
 
-    if user:
-        verification_token = await tokens_helper.create_verification_token(user=user)
-        await email_sender.send_request_on_verify(
-            user.email,
-            verification_token["token"],
-        )
-    else:
+    if not user:
         raise exceptions.user_already_exist
+
+
+@router.post("/login/verificator")
+async def send_verification_token(
+    user_in: schemas.UserCreate = Depends(schemas.UserCreate.as_form),
+    session: AsyncSession = Depends(db_helper.session_dependency),
+):
+    verification_token = await tokens_helper.create_verification_token(user=user_in)
+    await email_sender.send_request_on_verify(
+        user_in.email,
+        verification_token["token"],
+    )
 
 
 @router.get("/login/verificator")
