@@ -8,6 +8,10 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 BASE_DIR = Path(__file__).parent.parent
 
 
+class CelerySettings(BaseModel):
+    broker_url: str
+
+
 class RunSettings(BaseModel):
     scheme: str = "http"
     port: int = 8000
@@ -52,6 +56,7 @@ class Settings(BaseSettings):
     test_db: TestDBSettings
     email: EmailSettings
     security: SecuritySettings = SecuritySettings()
+    celery: CelerySettings
     run: RunSettings = RunSettings()
 
 
