@@ -5,8 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from backend.app.database.db_helper import db_helper
 from backend.app.database.models.user import UserModel
 from backend.app.api import tokens_helper, deps, exceptions, security_utils
-from backend.app.api.email_sender import email_sender
 from backend.app import schemas, crud
+from backend.celery_task.tasks.email_send import send_verification_email
 
 TYPE_ACCESS_TOKEN = "access"
 TYPE_RESET_PASSWORD_TOKEN = "reset_password"
@@ -41,7 +41,7 @@ async def send_verification_token(
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
     verification_token = await tokens_helper.create_verification_token(user=user_in)
-    await email_sender.send_request_on_verify(
+    send_verification_email.delay(
         user_in.email,
         verification_token["token"],
     )
