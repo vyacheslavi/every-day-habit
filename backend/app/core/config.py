@@ -10,12 +10,14 @@ BASE_DIR = Path(__file__).parent.parent
 
 class CelerySettings(BaseModel):
     broker_url: str
+    result_backend_url: str
 
 
 class RunSettings(BaseModel):
     scheme: str = "http"
     port: int = 8000
-    host: str = "127.0.0.1"
+    host: str = "0.0.0.0"
+    # host: str = "127.0.0.1"
     url: str = f"{scheme}://{host}:{port}"
 
 
