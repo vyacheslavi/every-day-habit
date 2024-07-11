@@ -3,9 +3,8 @@ version: "3.8"
 services:
 
   db:
-    container_name: prod_db
+    container_name: db
     image: postgres:14.1-alpine
-    # restart: always
     ports:
       - 5432:5432
     environment:
@@ -13,10 +12,9 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
     volumes:
-      # - ../2. Init Database:/docker-entrypoint-initdb.d
-      - habrdb-data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U habrpguser -d habrdb"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -27,8 +25,6 @@ services:
         limits:
           cpus: '1'
           memory: 4G
-    networks:
-      - custom
 
   db_test:
     container_name: test_db
@@ -40,15 +36,20 @@ services:
       - POSTGRES_DB=postgres_test
     ports:
       - "5433:5432"
-    networks:
-      - custom
+
+  alembic_migrations:
+    container_name: alembic
+    build:
+      context: .
+    command:
+      ['alembic', 'upgrade', 'head']
+    depends_on:
+      - db
 
   app:
     container_name: app
     build:
       context: .
-      dockerfile: Dockerfile
-    # command: bash -c "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
     env_file:
       - .env
     ports:
@@ -69,35 +70,67 @@ services:
       timeout: 5s
       retries: 5
 
-
   celery_worker:
     container_name: celery_worker
-    build: .
-    command: celery -A backend.celert_task.celery worker --loglevel=info
+    build:
+      context: .
+    command:
+      ['celery', '-A', 'backend.celery_task:celery_app', 'worker', '--loglevel=info']
     volumes:
-      - .:/app
-    # environment:
-      # - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+      - .:/usr/src/app/
     depends_on:
       - app
       - redis
 
   flower:
     container_name: flower
-    build: .
-    command: celery -A celery_worker.celery flower --port=5555
+    build:
+      context: .
+    command:
+      ['celery', '-A', 'backend.celery_task:celery_app', 'flower', '--port=5555']
     ports:
       - 5556:5555
-    # environment:
-      # - CELERY_BROKER_URL=${CELERY_BROKER_URL}
     depends_on:
       - app
       - redis
       - celery_worker
 
-networks:
-  custom:
-    driver: bridge
+  nginx:
+    build: .
+    image: umputun/nginx-le:latest
+    hostname: nginx
+    restart: always
+    container_name: nginx
+
+    logging:
+      driver: json-file
+      options:
+          max-size: "10m"
+          max-file: "5"
+
+    volumes:
+      - ./etc/ssl:/etc/nginx/ssl
+      - ./etc/service.conf:/etc/nginx/service.conf
+      # - ./etc/service-example-2.conf:/etc/nginx/service2.conf # more services, should be service*.conf
+      # - ./etc/stream-example-2.conf:/etc/nginx/stream2.conf # more streams, should be stream*.conf
+      - ./etc/conf.d:/etc/nginx/conf.d-le # configuration folder, all files from it will be added
+      - ./etc/stream.conf:/etc/nginx/stream.conf.d-le # streams configuration folder, all files from it will be added
+    ports:
+        - "80:80"
+        - "443:443"
+
+    depends_on:
+      - flower
+
+    environment:
+      - TZ=UTC
+      - LETSENCRYPT=true
+      - LE_EMAIL=vyach.karepov@mail.ru
+      - LE_FQDN=edh.vyacheslavi.ru
+      #- SSL_CERT=le-crt.pem
+      #- SSL_KEY=le-key.pem
+      #- SSL_CHAIN_CERT=le-chain-crt.pem
+      #- LE_ADDITIONAL_OPTIONS='--preferred-chain "ISRG Root X1"'
 
 volumes:
-  habrdb-data:
+  db-data:
