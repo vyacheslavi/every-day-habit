@@ -1,7 +1,7 @@
 .env
 /certs
-backend/certs/jwt-private.pem
-backend/certs/jwt-public.pem
+backend/app/certs/jwt-private.pem
+backend/app/certs/jwt-public.pem
 __pycache__
 /venv
 etc/ssl/dhparams.pem
