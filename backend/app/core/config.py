@@ -17,7 +17,6 @@ class RunSettings(BaseModel):
     scheme: str = "http"
     port: int = 8000
     host: str = "0.0.0.0"
-    # host: str = "127.0.0.1"
     url: str = f"{scheme}://{host}:{port}"
 
 
@@ -40,7 +39,7 @@ class SecuritySettings(BaseModel):
     jwt_private_key: Path = BASE_DIR / "certs" / "jwt-private.pem"
     jwt_public_key: Path = BASE_DIR / "certs" / "jwt-public.pem"
     algorithm: str = "RS256"
-    access_token_expire_minutes: int = 60 * 24
+    access_token_expire_minutes: int = 60 * 24 * 3
     verification_token_expire_minutes: int = 10
     reset_token_expire_minutes: int = 10
 

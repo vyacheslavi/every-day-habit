@@ -4,7 +4,6 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.ext.asyncio import AsyncSession
 from backend.app.api import deps
 from backend.app.database.db_helper import db_helper
-from backend.app.database.models.user import UserModel
 from webapps.utils import get_user_via_request
 
 

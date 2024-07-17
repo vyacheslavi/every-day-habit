@@ -1,0 +1,109 @@
+version: "3.8"
+
+services:
+
+  db:
+    container_name: db_container
+    image: postgres:14.1-alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 4G
+
+  alembic_migrations:
+    container_name: alembic_container
+    build:
+      context: .
+    command:
+      ['alembic', 'upgrade', 'head']
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+
+  app:
+    container_name: app_container
+    build:
+      context: .
+    env_file:
+      - .env
+    ports:
+      - 8000:8000
+    restart: always
+    depends_on:
+      - db
+      - db_test
+
+  redis:
+    container_name: redis_container
+    image: redis:7.2.4-alpine3.19
+    ports:
+      - '6380:6379'
+    healthcheck:
+      test: [ "CMD", "redis-cli","ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  celery_worker:
+    container_name: celery_worker
+    build:
+      context: .
+    command:
+      ['celery', '-A', 'backend.celery_task:celery_app', 'worker', '--loglevel=info']
+    volumes:
+      - .:/usr/src/app/
+    depends_on:
+      - app
+      - redis
+
+  nginx:
+    build: .
+    image: umputun/nginx-le:latest
+    hostname: nginx
+    restart: always
+    container_name: web_server
+
+    logging:
+      driver: json-file
+      options:
+          max-size: "10m"
+          max-file: "5"
+
+    volumes:
+      - ./etc/ssl:/etc/nginx/ssl
+      - ./etc/service.conf:/etc/nginx/service.conf
+      - ./etc/conf.d:/etc/nginx/conf.d-le # configuration folder, all files from it will be added
+      - ./etc/stream.conf:/etc/nginx/stream.conf.d-le # streams configuration folder, all files from it will be added
+    ports:
+        - "80:80"
+        - "443:443"
+
+    depends_on:
+      - flower
+
+    environment:
+      - TZ=UTC
+      - LETSENCRYPT=true
+      - LE_EMAIL=vyach.karepov@mail.ru
+      - LE_FQDN=edh.vyacheslavi.ru
+
+
+volumes:
+  db-data:
