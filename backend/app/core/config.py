@@ -51,7 +51,7 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         env_prefix="APP_CONFIG__",
         env_nested_delimiter="__",
-        extra="forbid",
+        extra="ignore",
     )
     mode: Literal["TEST", "DEV", "PROD"]
     db: DBSettings
