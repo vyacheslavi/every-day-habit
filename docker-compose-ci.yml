@@ -25,6 +25,8 @@ services:
         limits:
           cpus: '1'
           memory: 4G
+    networks:
+      - custom
 
   alembic_migrations:
     container_name: alembic_container
@@ -36,6 +38,9 @@ services:
       db:
         condition: service_healthy
         restart: true
+    networks:
+      - custom
+
 
   app:
     container_name: app_container
@@ -48,6 +53,8 @@ services:
     restart: always
     depends_on:
       - db
+    networks:
+      - custom
 
   redis:
     container_name: redis_container
@@ -59,6 +66,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - custom
 
   celery_worker:
     container_name: celery_worker
@@ -71,6 +80,8 @@ services:
     depends_on:
       - app
       - redis
+    networks:
+      - custom
 
   # letsencrypt:
   #   container_name: certbot
@@ -102,6 +113,12 @@ services:
       # - /etc/letsencrypt:/etc/letsencrypt:rw
       # # where certbot writes challenge files to when being challenged by a Let's Encrypt server
       # - /var/www/certbot:/var/www/certbot:ro
+    networks:
+      - custom
 
 volumes:
   db-data:
+
+networks:
+  custom:
+    driver: bridge
