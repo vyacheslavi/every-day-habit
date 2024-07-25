@@ -48,19 +48,6 @@ services:
         condition: service_healthy
         restart: true
 
-  app:
-    container_name: app_container
-    build:
-      context: .
-    env_file:
-      - .env
-    ports:
-      - 8000:8000
-    restart: always
-    depends_on:
-      - db
-      - db_test
-
   redis:
     container_name: redis_container
     image: redis:7.2.4-alpine3.19
@@ -71,6 +58,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - custom
 
   celery_worker:
     container_name: celery_worker
@@ -83,6 +72,8 @@ services:
     depends_on:
       - app
       - redis
+    networks:
+      - custom
 
   flower:
     container_name: flower
