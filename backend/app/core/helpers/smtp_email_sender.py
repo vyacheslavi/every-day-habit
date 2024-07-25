@@ -40,7 +40,7 @@ class EmailSender:
         receiver_email: str,
         token: str,
     ):
-        url = f"{settings.run.url}/v1/auth/reset-password?token={token}"
+        url = f"{settings.run.url}/login/reminder?token={token}"
         message = f"User {receiver_email} has forgot their password. Follow the link to reset password: {url}"
         self.send_email(receiver_email, "Forgot password", message)
 

@@ -1,6 +1,8 @@
 from datetime import timedelta
 from typing import Dict, NewType, Optional
 
+from pydantic import EmailStr
+
 from backend.app.api import security_utils
 from backend.app.database.models import UserModel
 from backend.app import schemas
@@ -25,9 +27,9 @@ async def create_access_token(user: UserModel) -> dict:
     return create_token(payload)
 
 
-async def create_reset_password_token(user: UserModel) -> dict:
+async def create_reset_password_token(email: EmailStr) -> dict:
     payload = {
-        "email": user.email,
+        "email": email,
     }
 
     return create_token(
