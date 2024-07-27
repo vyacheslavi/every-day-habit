@@ -38,7 +38,7 @@ async def registration(
         raise exceptions.user_already_exist
 
 
-@router.post("/login/verificator")
+@router.post("/login/verificator/request-on-verify")
 async def send_verification_token(
     user_in: schemas.UserCreate = Depends(schemas.UserCreate.as_form),
 ):
@@ -49,18 +49,18 @@ async def send_verification_token(
     )
 
 
-@router.get("/login/verificator")
+@router.post("/login/verificator")
 async def user_verification(
     token: str,
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
     try:
         payload = security_utils.decode_jwt(token)
-        email = payload["email"]
-        user = await crud.user.get_by_email(email=email, session=session)
-        await crud.user.verify_user(session=session, user=user)
-    except:
+    except security_utils.DecodeTokenException:
         raise exceptions.token_invalid_exc
+    email = payload["email"]
+    user = await crud.user.get_by_email(email=email, session=session)
+    await crud.user.verify_user(session=session, user=user)
 
 
 @router.post(
@@ -85,10 +85,18 @@ async def auth_user_issue_jwt(
     )
 
 
-@router.get("/login/reminder")
+@router.post("/login/reminder")
 async def forgot_password(
-    email: EmailStr,
+    email: EmailStr = Form(...),
+    session: AsyncSession = Depends(db_helper.session_dependency),
 ):
+    user = await crud.user.get_by_email(
+        session=session,
+        email=email,
+    )
+    if not user:
+        raise exceptions.user_not_exist
+
     reset_token = await tokens_helper.create_reset_password_token(email=email)
     send_reset_password_email.delay(
         email,
@@ -100,23 +108,20 @@ async def forgot_password(
     "/login/recover",
 )
 async def user_reset_password(
-    token: str,
+    token: str = Form(...),
     password: str = Form(...),
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
     try:
         payload = security_utils.decode_jwt(token)
         email = payload["email"]
-        user = await crud.user.get_by_email(email=email, session=session)
-        await crud.user.verify_user(session=session, user=user)
-    except:
+        await crud.user.change_password(
+            email=email,
+            password=password,
+            session=session,
+        )
+    except security_utils.DecodeTokenException:
         raise exceptions.token_invalid_exc
-
-    result = await crud.user.change_password(
-        password=password,
-        session=session,
-        user=user,
-    )
 
 
 @router.get("/user/me/", response_model=schemas.UserResponseModel)
