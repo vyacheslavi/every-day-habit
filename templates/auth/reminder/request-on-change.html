@@ -1,0 +1,36 @@
+{% extends "base.html"%}
+
+{% block content %}
+<html>
+  <body class="bg-dark">
+    <div class="container w-50 mt-5">
+      <form class="p-4 p-md-5 border rounded-3 bg-body-tertiary bg-dark " id="form">
+        <h2 class="mb-3">Enter your email to recover your password </h2>
+        <div class="form-floating mb-3">
+          <input name="email" type="email" class="form-control" id="floatingInput" placeholder="email" required>
+          <label for="floatingInput">email</label>
+        </div>
+        <div class="text-center">
+          <button class="w-100 btn btn-lg btn-success" type="submit" id="btn">
+            <span class="spinner-border spinner-border-sm visually-hidden" id="spnr" aria-hidden="true"></span>
+            <span role="status">
+              Send
+            </span>
+          </button>
+          <div class="invalid-feedback-my" id="invalid-fbck"></div>
+          <div class="valid-feedback-my" id="valid-fbck"></div>
+        </div>
+        <hr>
+      <div>
+        <a href="/login">
+          <p class="text-center">
+            Back to login page
+          </p>
+        </a>
+      </div>
+      </form>
+    </div>
+    <script src="{{ url_for('static', path='/scripts/auth/reminder/request-on-change.js')}}"></script>
+  </body>
+</html>
+{% endblock %}
