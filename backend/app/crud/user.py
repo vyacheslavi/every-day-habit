@@ -44,8 +44,9 @@ class UserCRUD(CRUDBase[UserModel, UserCreate, UserUpdate]):
             return None
 
     async def change_password(
-        self, user: UserModel, password: str, session: AsyncSession
+        self, email: str, password: str, session: AsyncSession
     ) -> bool:
+        user = await self.get_by_email(email=email, session=session)
         try:
             hash_pw: bytes = security_utils.hash_password(password)
             setattr(user, "hashed_password", hash_pw)
