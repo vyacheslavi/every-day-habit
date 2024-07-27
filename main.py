@@ -52,6 +52,6 @@ if __name__ == "__main__":
     uvicorn.run(
         "main:backend_app",
         host=settings.run.host,
-        port=8000,
+        port=settings.run.port,
         reload=True,
     )
