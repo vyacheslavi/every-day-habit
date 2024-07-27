@@ -8,7 +8,7 @@ async function sendRequestVerification(token) {
   return await fetch(
     window.location.origin + `/api/v1/login/verificator/?token=${token}`,
     {
-      method: "GET",
+      method: "POST",
     }
   );
 }
