@@ -1,5 +1,9 @@
 up:
 	docker compose -f docker-compose-ci.yml up -d
+up-local:
+	docker compose -f docker-compose-local.yml up -d
+
+
 build:
 	docker compose -f docker-compose-ci.yml up -d --build
 upwatch:
