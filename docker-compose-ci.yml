@@ -86,10 +86,11 @@ services:
   letsencrypt:
     container_name: certbot
     image: certbot/certbot:latest
-    command: sh -c "certbot certonly --standalone -d ${APP_DOMAINNAME} --text --agree-tos --email ${APP_DOMAINNAME_EMAIL} --server https://acme-v02.api.letsencrypt.org/directory --rsa-key-size 4096 --verbose --keep-until-expiring --preferred-challenges=http"
+    command: sh -c "certonly --webroot -w /var/www/certbot --force-renewal -d ${APP_DOMAINNAME} --text --agree-tos --email ${APP_DOMAINNAME_EMAIL} --verbose"
+    # command: sh -c "certbot certonly --standalone -d ${APP_DOMAINNAME} --text --agree-tos --email ${APP_DOMAINNAME_EMAIL} --server https://acme-v02.api.letsencrypt.org/directory --rsa-key-size 4096 --verbose --keep-until-expiring --preferred-challenges=http"
     env_file:
       - .env
-    entrypoint: ""
+    # entrypoint: ""
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt:rw
     environment:
@@ -110,9 +111,9 @@ services:
       # where the nginx config is located
       - ./etc/nginx/nginx.conf:/etc/nginx/nginx.conf
       # # where certbot placed the initial tls cert, and where refreshed certs will be placed
-      - /etc/letsencrypt:/etc/letsencrypt:rw
+      - /etc/letsencrypt:/etc/letsencrypt
       # # where certbot writes challenge files to when being challenged by a Let's Encrypt server
-      - /var/www/certbot:/var/www/certbot:ro
+      - /var/www/certbot:/var/www/certbot
     networks:
       - custom
 
