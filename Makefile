@@ -14,4 +14,4 @@ build:
 	docker compose -f docker-compose-ci.yml up -d --build
 
 rebuild:
-	docker-compose -f docker-compose-ci.yml up -d --force-recreate --no-deps --build $(container)
+	docker compose -f docker-compose-ci.yml up -d --force-recreate --no-deps --build $(container)
