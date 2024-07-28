@@ -5,9 +5,9 @@ up-local:
 
 
 down:
-	docker compose -f docker-compose-ci.yml down -d
+	docker compose -f docker-compose-ci.yml down
 down-local:
-	docker compose -f docker-compose-local.yml down -d
+	docker compose -f docker-compose-local.yml down
 
 
 build:
