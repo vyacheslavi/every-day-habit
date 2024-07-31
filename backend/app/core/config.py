@@ -17,7 +17,7 @@ class RunSettings(BaseModel):
     scheme: str = "http"
     port: int = 8000
     host: str = "0.0.0.0"
-    url: str = "htpps://edh.vyacheslavi"
+    url: str = "https://edh.vyacheslavi.ru"
 
 
 class EmailSettings(BaseModel):
