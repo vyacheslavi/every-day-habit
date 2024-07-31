@@ -54,4 +54,5 @@ if __name__ == "__main__":
         host=settings.run.host,
         port=settings.run.port,
         reload=True,
+        forwarded_allow_ips="*",
     )
