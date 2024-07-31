@@ -86,15 +86,16 @@ services:
   letsencrypt:
     container_name: certbot
     image: certbot/certbot:latest
-    command: sh -c "certonly --webroot -w /var/www/certbot --force-renewal -d ${APP_DOMAINNAME} --text --agree-tos --email ${APP_DOMAINNAME_EMAIL} --verbose"
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email ${APP_DOMAINNAME_EMAIL} -d ${APP_DOMAINNAME} -v --agree-tos
     # command: sh -c "certbot certonly --standalone -d ${APP_DOMAINNAME} --text --agree-tos --email ${APP_DOMAINNAME_EMAIL} --server https://acme-v02.api.letsencrypt.org/directory --rsa-key-size 4096 --verbose --keep-until-expiring --preferred-challenges=http"
     env_file:
       - .env
     # entrypoint: ""
     volumes:
-      - /etc/letsencrypt:/etc/letsencrypt:rw
-    environment:
-      - TERM=xterm
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/www/certbot:/var/www/certbot
+    networks:
+      - custom
 
   webserver:
     container_name: nginx
@@ -114,6 +115,7 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt
       # # where certbot writes challenge files to when being challenged by a Let's Encrypt server
       - /var/www/certbot:/var/www/certbot
+
     networks:
       - custom
 
