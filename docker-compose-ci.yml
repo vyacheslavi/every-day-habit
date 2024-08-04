@@ -3,14 +3,14 @@ version: "3.8"
 services:
 
   db:
-    container_name: db_container
+    container_name: db
     image: postgres:14.1-alpine
     ports:
       - 5432:5432
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - db-data:/var/lib/postgresql/data
     healthcheck:
@@ -20,6 +20,8 @@ services:
       retries: 5
       start_period: 10s
     restart: unless-stopped
+    env_file:
+      - .env
     deploy:
       resources:
         limits:
@@ -28,8 +30,8 @@ services:
     networks:
       - custom
 
-  alembic_migrations:
-    container_name: alembic_container
+  migrations:
+    container_name: migrations
     build:
       context: .
     command:
@@ -43,7 +45,7 @@ services:
 
 
   app:
-    container_name: app_container
+    container_name: app
     build:
       context: .
     env_file:
@@ -57,7 +59,7 @@ services:
       - custom
 
   redis:
-    container_name: redis_container
+    container_name: redis
     image: redis:7.2.4-alpine3.19
     ports:
       - '6380:6379'
@@ -83,7 +85,7 @@ services:
     networks:
       - custom
 
-  letsencrypt:
+  certbot:
     container_name: certbot
     image: certbot/certbot:latest
     command: certonly --webroot -w /var/www/certbot --force-renewal --email ${APP_DOMAINNAME_EMAIL} -d ${APP_DOMAINNAME} -v --agree-tos
@@ -97,10 +99,11 @@ services:
     networks:
       - custom
 
-  webserver:
+  nginx:
     container_name: nginx
     image: nginx:1.18
     restart: always
+    command:
     env_file:
       - .env
     ports:
