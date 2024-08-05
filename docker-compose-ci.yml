@@ -3,14 +3,14 @@ version: "3.8"
 services:
 
   db:
-    container_name: db_container
+    container_name: db
     image: postgres:14.1-alpine
     ports:
       - 5432:5432
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - db-data:/var/lib/postgresql/data
     healthcheck:
@@ -20,14 +20,18 @@ services:
       retries: 5
       start_period: 10s
     restart: unless-stopped
+    env_file:
+      - .env
     deploy:
       resources:
         limits:
           cpus: '1'
           memory: 4G
+    networks:
+      - custom
 
-  alembic_migrations:
-    container_name: alembic_container
+  migrations:
+    container_name: migrations
     build:
       context: .
     command:
@@ -36,9 +40,12 @@ services:
       db:
         condition: service_healthy
         restart: true
+    networks:
+      - custom
+
 
   app:
-    container_name: app_container
+    container_name: app
     build:
       context: .
     env_file:
@@ -48,10 +55,11 @@ services:
     restart: always
     depends_on:
       - db
-      - db_test
+    networks:
+      - custom
 
   redis:
-    container_name: redis_container
+    container_name: redis
     image: redis:7.2.4-alpine3.19
     ports:
       - '6380:6379'
@@ -60,6 +68,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - custom
 
   celery_worker:
     container_name: celery_worker
@@ -72,38 +82,49 @@ services:
     depends_on:
       - app
       - redis
+    networks:
+      - custom
+
+  certbot:
+    container_name: certbot
+    image: certbot/certbot:latest
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email ${APP_DOMAINNAME_EMAIL} -d ${APP_DOMAINNAME} -v --agree-tos
+    # command: sh -c "certbot certonly --standalone -d ${APP_DOMAINNAME} --text --agree-tos --email ${APP_DOMAINNAME_EMAIL} --server https://acme-v02.api.letsencrypt.org/directory --rsa-key-size 4096 --verbose --keep-until-expiring --preferred-challenges=http"
+    env_file:
+      - .env
+    # entrypoint: ""
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/www/certbot:/var/www/certbot
+    networks:
+      - custom
 
   nginx:
-    build: .
-    image: umputun/nginx-le:latest
-    hostname: nginx
+    container_name: nginx
+    image: nginx:1.18
     restart: always
-    container_name: web_server
-
-    logging:
-      driver: json-file
-      options:
-          max-size: "10m"
-          max-file: "5"
-
-    volumes:
-      - ./etc/ssl:/etc/nginx/ssl
-      - ./etc/service.conf:/etc/nginx/service.conf
-      - ./etc/conf.d:/etc/nginx/conf.d-le # configuration folder, all files from it will be added
-      - ./etc/stream.conf:/etc/nginx/stream.conf.d-le # streams configuration folder, all files from it will be added
+    command:
+    env_file:
+      - .env
     ports:
-        - "80:80"
-        - "443:443"
-
+      - 80:80
+      - 443:443
     depends_on:
-      - flower
+      - app
+    volumes:
+      # where the nginx config is located
+      - ./etc/nginx/nginx.conf:/etc/nginx/nginx.conf
+      # # where certbot placed the initial tls cert, and where refreshed certs will be placed
+      - /etc/letsencrypt:/etc/letsencrypt
+      # # where certbot writes challenge files to when being challenged by a Let's Encrypt server
+      - /var/www/certbot:/var/www/certbot
 
-    environment:
-      - TZ=UTC
-      - LETSENCRYPT=true
-      - LE_EMAIL=vyach.karepov@mail.ru
-      - LE_FQDN=edh.vyacheslavi.ru
-
+    networks:
+      - custom
 
 volumes:
   db-data:
+
+networks:
+  custom:
+    driver: bridge

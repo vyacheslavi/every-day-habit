@@ -1,12 +1,11 @@
 from fastapi import APIRouter
 
 from .calendar import calendar
-from .auth import login, register
+from .auth import router as auth_router
 
 
 router = APIRouter()
 
 
 router.include_router(calendar.router)
-router.include_router(login.router)
-router.include_router(register.router)
+router.include_router(auth_router)

@@ -13,10 +13,6 @@ ENV PYTHONDONTWRITEBYTECODE=1\
     POETRY_VERSION=1.8.3
 
 
-RUN apk update && \
-    apk add --no-cache \
-    openssh-keygen
-
 RUN mkdir -p /usr/src/app/
 
 RUN pip install --upgrade pip
@@ -25,11 +21,6 @@ RUN curl -sSL https://install.python-poetry.org | python3 -
 COPY . /usr/src/app/
 
 WORKDIR /usr/src/app/
-
-RUN mkdir -p /backend/app/certs && \
-    chmod 0700 /backend/app/certs && \
-    ssh-keygen -f /backend/app/certs/jwt-private.pem\
-    ssh-keygen -f /backend/app/certs/jwt-public.pem
 
 RUN  poetry config virtualenvs.create false && poetry install
 

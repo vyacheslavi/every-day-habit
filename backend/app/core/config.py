@@ -17,7 +17,7 @@ class RunSettings(BaseModel):
     scheme: str = "http"
     port: int = 8000
     host: str = "0.0.0.0"
-    url: str = f"{scheme}://{host}:{port}"
+    url: str = "https://edh.vyacheslavi.ru"
 
 
 class EmailSettings(BaseModel):
@@ -51,6 +51,7 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         env_prefix="APP_CONFIG__",
         env_nested_delimiter="__",
+        extra="ignore",
     )
     mode: Literal["TEST", "DEV", "PROD"]
     db: DBSettings

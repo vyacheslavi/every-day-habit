@@ -13,13 +13,16 @@ async function sendData(data) {
 }
 
 async function sendRequestVerification(data) {
-  return await fetch(window.location.origin + "/api/v1/login/verificator", {
-    method: "POST",
-    headers: {
-      accept: "application/json",
-    },
-    body: data,
-  });
+  return await fetch(
+    window.location.origin + "/api/v1/login/verificator/request-on-verify",
+    {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+      },
+      body: data,
+    }
+  );
 }
 
 async function handleFormSubmit(event) {
