@@ -8,7 +8,7 @@ A few words about the project:
 
 Stack:
 1) Backend
-     * FastAPI, SQLAlchemy, PostgreSQL, Docker,
+     * FastAPI, SQLAlchemy, Celery, PostgreSQL, Redis
 2) Frontend
      * Jinja2, JS, HTML, CSS
 
